@@ -25,6 +25,7 @@ client.once('ready', async () => {
             guildId: channel.guild.id,
             adapterCreator: channel.guild.voiceAdapterCreator,
             selfMute: true,
+            selfDeaf: false, 
         });
 
         console.log('Joined voice channel and self-muted');
