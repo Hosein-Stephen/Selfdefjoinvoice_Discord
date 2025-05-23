@@ -1,36 +1,41 @@
 const { Client } = require('discord.js-selfbot-v13');
-const client = new Client({ intents: '3276799', disableMentions: 'everyone' });
-
 const { joinVoiceChannel } = require('@discordjs/voice');
 require('dotenv').config();
 
-const VOICE_CHANNEL_ID = '1353309199953563708'; // Ensure this is correct
+const client = new Client({ intents: 3276799, disableMentions: 'everyone' });
+
+// List of voice channel IDs you want to join
+const VOICE_CHANNEL_IDS = [
+  '1371093796598841355',
+  '1343565850724143187',
+  // add more channel IDs as needed
+];
 
 client.once('ready', async () => {
-    console.log(`Logged in as ${client.user.tag}`);
-    
+  console.log(`Logged in as ${client.user.tag}`);
+
+  for (const channelId of VOICE_CHANNEL_IDS) {
     try {
-        const channel = await client.channels.fetch(VOICE_CHANNEL_ID)
-            .catch(err => console.error('Failed to fetch channel:', err));
+      const channel = await client.channels.fetch(channelId);
 
-        console.log('Fetched channel:', channel);
+      if (!channel || channel.type !== 'GUILD_VOICE') {
+        console.log(`Voice channel not found or invalid type for ID: ${channelId}`);
+        continue;
+      }
 
-        if (!channel || channel.type !== 'GUILD_VOICE') {  // Fix: Compare against 'GUILD_VOICE' instead of 2
-            console.log('Voice channel not found or invalid (wrong type)');
-            return;
-        }
+      joinVoiceChannel({
+        channelId: channel.id,
+        guildId: channel.guild.id,
+        adapterCreator: channel.guild.voiceAdapterCreator,
+        selfMute: false,
+        selfDeaf: false,
+      });
 
-        const connection = joinVoiceChannel({
-            channelId: VOICE_CHANNEL_ID,
-            guildId: channel.guild.id,
-            adapterCreator: channel.guild.voiceAdapterCreator,
-            selfMute: true,
-            selfDeaf: false, 
-        });
-
-        console.log('Joined voice channel and self-muted');
+      console.log(`Joined voice channel: ${channel.name} (${channel.id})`);
     } catch (error) {
-        console.error('Error joining voice channel:', error);
+      console.error(`Failed to join voice channel ${channelId}:`, error);
     }
+  }
 });
+
 client.login('');
