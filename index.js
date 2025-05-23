@@ -6,8 +6,8 @@ const client = new Client({ intents: 3276799, disableMentions: 'everyone' });
 
 // List of voice channel IDs you want to join
 const VOICE_CHANNEL_IDS = [
-  '1371093796598841355',
-  '1343565850724143187',
+  '',
+  '',
   // add more channel IDs as needed
 ];
 
